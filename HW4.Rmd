@@ -1,0 +1,34 @@
+---
+title: "HW4"
+output: html_document
+date: "2022-10-27"
+---
+
+```{r loading packages}
+#install.packages("countrycode")
+library(here)
+library(sf)
+library(tidyverse)
+library(countrycode)
+library(janitor)
+```
+```{r loading data}
+#spatial data
+world <- st_read(here("World_Countries_(Generalized)","World_Countries__Generalized_.shp"))
+gender <- read.csv(here("HDR21-22_Composite_indices_complete_time_series.csv"),,na="NULL")
+
+```
+```{r calculating the gender inequality}
+hdi_index <- gender %>%
+  clean_names() %>%
+  dplyr::select("iso3","country","hdi_2010","hdi_2019") %>%
+  mutate(hdi_diff = hdi_2019 - hdi_2010)
+```
+
+```{r join the diff_hdi with spatial data}
+world_hdi_diff <- world %>%
+  clean_names() %>%
+  merge(., hdi_index, by=c("country" = "country"))
+```
+
+
