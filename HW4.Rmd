@@ -11,6 +11,8 @@ library(sf)
 library(tidyverse)
 library(countrycode)
 library(janitor)
+library(tmap)
+library(tmaptools)
 ```
 ```{r loading data}
 #spatial data
@@ -35,6 +37,10 @@ world_iso3 <- world %>%
 world_hdi_diff <- world_iso3 %>%
   clean_names() %>%
   merge(., hdi_index, by=c("iso3" = "iso3"))
+
+tmap_mode("plot")
+qtm(world_hdi_diff,fill="hdi_diff")
+
 ```
 
 
