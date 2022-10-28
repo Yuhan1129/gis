@@ -14,21 +14,27 @@ library(janitor)
 ```
 ```{r loading data}
 #spatial data
-world <- st_read(here("World_Countries_(Generalized)","World_Countries__Generalized_.shp"))
-gender <- read.csv(here("HDR21-22_Composite_indices_complete_time_series.csv"),,na="NULL")
+world <- st_read(here("Data/World_Countries_(Generalized)","World_Countries__Generalized_.shp"))
+gender <- read.csv(here("Data/HDR21-22_Composite_indices_complete_time_series.csv"),na="NULL")
 
 ```
-```{r calculating the gender inequality}
+```{r calculating the gender inequality and convert the country name into iso3 in world shp}
 hdi_index <- gender %>%
   clean_names() %>%
   dplyr::select("iso3","country","hdi_2010","hdi_2019") %>%
   mutate(hdi_diff = hdi_2019 - hdi_2010)
+
+
+#world<-clean_names(world)
+world_iso3 <- world %>%
+  clean_names() %>%
+  mutate(iso3 = countrycode(country,origin = "country.name", destination = "iso3c"))
 ```
 
 ```{r join the diff_hdi with spatial data}
-world_hdi_diff <- world %>%
+world_hdi_diff <- world_iso3 %>%
   clean_names() %>%
-  merge(., hdi_index, by=c("country" = "country"))
+  merge(., hdi_index, by=c("iso3" = "iso3"))
 ```
 
 
