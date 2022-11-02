@@ -21,10 +21,10 @@ gender <- read.csv(here("Data/HDR21-22_Composite_indices_complete_time_series.cs
 
 ```
 ```{r calculating the gender inequality and convert the country name into iso3 in world shp}
-hdi_index <- gender %>%
+gii_index <- gender %>%
   clean_names() %>%
-  dplyr::select("iso3","country","hdi_2010","hdi_2019") %>%
-  mutate(hdi_diff = hdi_2019 - hdi_2010)
+  dplyr::select("iso3","country","gii_2010","gii_2019") %>%
+  mutate(gii_diff = gii_2019 - gii_2010)
 
 
 #world<-clean_names(world)
@@ -34,12 +34,16 @@ world_iso3 <- world %>%
 ```
 
 ```{r join the diff_hdi with spatial data}
-world_hdi_diff <- world_iso3 %>%
+world_gii_diff <- world_iso3 %>%
   clean_names() %>%
-  merge(., hdi_index, by=c("iso3" = "iso3"))
+  merge(., gii_index, by=c("iso3" = "iso3"))
+
+world_gii_diff_2 <- world_iso3 %>%
+  clean_names() %>%
+  left_join(., gii_index, by=c("iso3" = "iso3"))
 
 tmap_mode("plot")
-qtm(world_hdi_diff,fill="hdi_diff")
+qtm(world_gii_diff,fill="gii_diff")
 
 ```
 
